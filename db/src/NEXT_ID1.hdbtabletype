@@ -1,0 +1,3 @@
+TYPE "NEXT_ID1" AS TABLE ( 
+    "ID" INT
+)

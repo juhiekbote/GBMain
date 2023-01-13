@@ -1,0 +1,19 @@
+@domain = http://localhost:4004
+
+##insert otp 
+POST {{domain}}/catalog/Z_GB_TPO_OTP
+Content-Type: application/json
+
+{
+    "OTP_Request_Id" : "1000000000"
+
+}
+
+###Send OTP in Email
+POST {{domain}}/catalog/SendOTPInEmail
+Content-Type: application/json
+
+{
+    "TPO_Req_No" : "1000000033"
+
+}

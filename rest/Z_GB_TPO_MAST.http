@@ -1,0 +1,30 @@
+### TPO Master Create
+POST http://localhost:4004/catalog/Z_GB_TPO_MAST
+Content-Type: application/json
+
+{
+   "FName" : "Juhi",
+   "LName" : "Ekbote",
+   "Business_Email" : "abc@gmail.com",
+   "Phone_Number" : "+91 83203 66091"
+
+}
+
+### TPO Master Update
+PUT http://localhost:4004/catalog/Z_GB_TPO_MAST(Request_Number='1000000033')
+Content-Type: application/json
+
+{   
+   "Business_Email" : "juhi.ekbot@gmail.com",
+   "Phone_Number" : "+91 83203 66085"
+
+}
+
+
+###create request number
+post http://localhost:4004/catalog/Z_TPO_REQ_NO
+Content-Type: application/json
+
+{
+    "TPO_Req_No":"1000"
+}

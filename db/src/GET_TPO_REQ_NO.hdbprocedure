@@ -1,0 +1,11 @@
+PROCEDURE "GET_TPO_REQ_NO"(OUT NEXT_ID1 "NEXT_ID1" )
+   LANGUAGE SQLSCRIPT
+   SQL SECURITY INVOKER
+   --DEFAULT SCHEMA <default_schema_name>
+   READS SQL DATA AS
+BEGIN
+   /*************************************
+       Write your procedure logic
+   *************************************/
+   NEXT_ID1 = SELECT "TPO_Req_No".NEXTVAL AS ID  FROM DUMMY;
+END

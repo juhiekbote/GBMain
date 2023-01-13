@@ -1,0 +1,17 @@
+{
+    "Errors": 
+    {
+   "100": {
+        "error_code" : 100,
+        "msg_text" : "Invalid Phone Number"
+    
+    },
+    "101":{
+        "error_code" : 101,
+        "msg_text" : "Invalid Email Id"
+    }
+   
+    
+    
+    }
+}
