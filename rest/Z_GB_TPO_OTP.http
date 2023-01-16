@@ -5,7 +5,8 @@ POST {{domain}}/catalog/Z_GB_TPO_OTP
 Content-Type: application/json
 
 {
-    "OTP_Request_Id" : "1000000000"
+    "Request_Id" : "1000000034",
+    "OTP":"123"
 
 }
 
@@ -14,6 +15,16 @@ POST {{domain}}/catalog/SendOTPInEmail
 Content-Type: application/json
 
 {
-    "TPO_Req_No" : "1000000033"
+    "TPO_Req_No" : "1000000034"
+
+}
+
+### Verify OTP
+POST {{domain}}/catalog/verifyOTP
+Content-Type: application/json
+
+{
+    "TPO_Req_No" : "1000000034",
+    "OTP" : "25854337"
 
 }

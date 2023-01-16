@@ -47,69 +47,70 @@ module.exports = cds.service.impl(function () {
         }
     });
 
-    this.before(['UPDATE'], 'Z_GB_TPO_MAST', async (req) => {
-        try {
-            const tx = cds.tx(req);
-            const jsondata = removeEmptyOrNull(req.data);
-            const TPO_Request_Number = req.data.Request_Number;
 
-            console.log(jsondata);
-            console.log('jsondata -' + JSON.stringify(jsondata));
-            var columnsIn = jsondata;
-
-            console.log(columnsIn);
-
-            const existingflag = await tx.run(SELECT.one(Z_GB_TPO_MAST).where({ Request_Number: TPO_Request_Number }).columns('FName'));
-            console.log(existingflag);
-        }
-        catch (error) {
-            console.log(error.message);
-
-        }
-    });
-
-    const removeEmptyOrNull = (obj) => {
-
-        Object.keys(obj).forEach(k =>
-
-            (obj[k] && typeof obj[k] === 'object') && removeEmptyOrNull(obj[k]) ||
-
-            (!obj[k] && obj[k] !== undefined) && delete obj[k]
-        );
-        return obj;
-    };
 
     this.on("SendOTPInEmail", async function (req, res) {
 
         var reqNo = req.data.TPO_Req_No;
+        var otp, email;
+        otp = validation.generateOTP();
 
-        var otp ;
-        do{
-            otp = validation.generateOTP();
-        }while(otp.length != 8) 
-
-        var selectQuery = SELECT.from`Z_GB_TPO_MAST`.columns`Business_Email`.where `Request_Number = ${reqNo}`;
-        var result = await cds.run(selectQuery); //result[0].Business_Email
-
-        var query = INSERT.into(Z_GB_TPO_OTP).entries({ OTP: otp, OTP_Request_Id:reqNo })
+        var { Business_Email } = await getMasterData(reqNo)
+        var query = INSERT.into`db.tpo.Z_GB_TPO_OTP`.entries({ OTP: otp.toString(), Request_Id: reqNo, OTPCreatedDateTime: new Date().toISOString() })
         var qresult = await cds.run(query);
 
         const transporter = new SapCfMailer("GMAIL");
         const mail = await transporter.sendMail({
-            to: result[0].Business_Email,
-            subject: `Enbridge: OTP for login `,
-            text: `<h2><strong>Dear User,</strong></h2>
+            to: Business_Email,
+            subject: `Enbridge Onboarding`,
+            html: `<!DOCTYPE html> <html><h2><strong>Dear User,</strong></h2>
             <h2>Enter the below OTP for your Request Number ${reqNo}</h2>
             <h1><strong>${otp}</strong></h1>
             <h2><strong>Best Regards,</strong></h2>
-            <h2><strong>Enbridge Team&nbsp;</strong></h2>`
+            <h2><strong>Enbridge Team&nbsp;</strong></h2></html>`
+        }).then(function (req, res) {
+
+            if (req.accepted.length > 0) {
+                return `Success`
+            } else {
+                return `Error`
+            }
+        }).catch((err) => {
+            return err
         });
-        return JSON.stringify(mail);
-        
+        if (mail == 'Success') {
+            return { status: "Success", message: "Mail Send Successful" }
+        } else {
+            req.error("424", "Mail Failed")
+        }
+
     });
 
     
 
+    async function getMasterData(reqNo) {
+        var selectQuery = SELECT.from`db.tpo.Z_GB_TPO_MAST`.where`Request_Number = ${reqNo}`;
+        var result = await cds.run(selectQuery); //result[0].Business_Email
+        return result[0];
+    };
+
+    this.on("verifyOTP", async function (req, res) {
+        var reqNo = req.data.TPO_Req_No;
+        var otp = req.data.OTP;
+
+        var queryOTP = SELECT.from`db.tpo.Z_GB_TPO_OTP`.where`Request_Id = ${reqNo}` .orderBy `OTPCreatedDateTime desc`;
+        var result = await cds.run(queryOTP);
+        //check if enetered OTP and Stored OTP are matching or not
+        if (otp == result[0].OTP){
+            return { status: "Success", message: "OTP Verified" }
+        }
+        else{
+            req.error(404, "OTP Verification Failed");
+        }
+
+
+
+    });
 
 
 })

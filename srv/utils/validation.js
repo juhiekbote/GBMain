@@ -25,7 +25,10 @@ module.exports = {
 
     generateOTP : function() 
     {
-        var OTP = Math.round(Math.random() * 10000000);
+        var OTP = Math.round(Math.random() * 100000000).toString();
+        if(OTP.length != 8){
+            this.generateOTP();
+        }
         return OTP;
     }
 }

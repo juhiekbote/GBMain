@@ -5,7 +5,7 @@ Content-Type: application/json
 {
    "FName" : "Juhi",
    "LName" : "Ekbote",
-   "Business_Email" : "abc@gmail.com",
+   "Business_Email" : "juhi.ekbote@gmail.com",
    "Phone_Number" : "+91 83203 66091"
 
 }

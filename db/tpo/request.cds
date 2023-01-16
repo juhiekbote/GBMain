@@ -49,12 +49,12 @@ entity Z_GB_TPO_MAST {
 
 entity Z_GB_TPO_OTP {
     key OTP_UUID            : UUID;
-    key OTP_Request_Id      : BusinessKey;
+        Request_Id      : BusinessKey;
         OTP                 : String(8) @assert.format : '^[0-9]{8}$';
         MaxAttempts         : Integer default 3;
         TriedAttempts       : Integer ;
         OTPCreatedDateTime  : DateTime;
-        OTPExpiryInMins     : Integer  default 2;
+        OTPValidityDateTime : DateTime;
         OTPExpired          : Boolean;
         OTPUsed             : Boolean;
         OTPVerifiedDateTime : DateTime;
